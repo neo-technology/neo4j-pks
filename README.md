@@ -1,3 +1,24 @@
+# Neo4j PKS Integration
+
+For documentation on installation and usage, please refer to the [user guide](user-guide/USER-GUIDE.md)
+
+## Overview
+
+This repo contains the files necessary to package and install Neo4j for Pivotal PKS.  The approach is based on a helm
+template, which expands to YAML that can be used to install Neo4j.
+
+In general, the chart is divided into two key components; a StatefulSet for "core nodes" and a StatefulSet for "read replicas".
+This structure mimics the [Neo4j Cluster Architecture](https://neo4j.com/docs/operations-manual/current/clustering/introduction/)
+
+Persistent Volumes (PVs) are used to back each cluster pod; HA clusters generally call for a minimum of 3 core nodes and 0 read replicas.
+
+## Related/Ancillary Documentation
+
+* [Considerations for running Neo4j in Orchestration Environments](https://medium.com/neo4j/neo4j-considerations-in-orchestration-environments-584db747dca5)
+* [Neo4j PKS User Guide](user-guide/USER-GUIDE.md)
+* [Neo4j Clustering Operations Manual](https://neo4j.com/docs/operations-manual/current/clustering/)
+* [Detailed technical description of querying Neo4j clusters](https://medium.com/neo4j/querying-neo4j-clusters-7d6fde75b5b4)
+
 ### Helm Expansion
 
 ```
