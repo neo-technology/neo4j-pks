@@ -47,9 +47,9 @@ heap size and page cache sizing are the most important places to start when tuni
 Immediately after deploying Neo4j on PKS, as the pods are created the cluster begins to form.  This may take up to 5 minutes, depending on a number of factors including how long it takes pods to get scheduled, and how many resources are associated with the pods.  While the cluster is forming, the Neo4j REST API and Bolt endpoints may not be available.   After a few minutes, bolt endpoints become available inside of the kubernetes cluster.  Please note that by default, Neo4j services are not
 exposed externally.  See below for information on proxying and other limitations.
 
-### Generated Password
+### Getting your Password
 
-After installing from GCP Marketplace, your cluster will start with a strong password that was randomly generated in the startup process.   This is stored in a kubernetes secret that is attached to your deployment.   Given a deployment named “my-graph”, you can find the password as the “neo4j-password” key under the mygraph-neo4j-secrets configuration item in Kubernetes.   The password is base64 encoded, and can be recovered as plaintext by authorized users with this command:
+After installation, whether a password was specified or generated, the password is stored in a kubernetes secret that is attached to your deployment.   Given a deployment named “my-graph”, you can find the password as the “neo4j-password” key under the mygraph-neo4j-secrets configuration item in Kubernetes.  The password is base64 encoded, and can be recovered as plaintext by authorized users with this command:
 
 ```
 kubectl get secrets $APP_INSTANCE_NAME-neo4j-secrets -o yaml | grep neo4j-password: | sed 's/.*neo4j-password: *//' | base64 --decode
@@ -96,7 +96,7 @@ To connect to your cluster, you can issue the following command; modify APP_INST
 APP_INSTANCE_NAME=my-graph
 # Set password as described above in NEO4J_PASSWORD
 kubectl run -it --rm cypher-shell \
-  --image=gcr.io/cloud-marketplace/neo4j-public/causal-cluster-k8s:3.5 \
+  --image=causal-cluster-k8s:3.5 \
   --restart=Never \
   --namespace=default \
   --command -- ./bin/cypher-shell -u neo4j \
@@ -167,7 +167,7 @@ backup set before starting.  Instructions on how to restore are provided in this
 new pods are mostly caught up before entering the cluster, and the "catch-up" process is minimal both
 in terms of time spent and load placed on the rest of the cluster.
 
-Because of the data intensive nature of any database, careful planning before scaling is highly recommended.   Storage allocation for each new node is also needed; as a result, when scaling the database, the kubernetes cluster will create new persistent volume claims and GCE volumes.
+Because of the data intensive nature of any database, careful planning before scaling is highly recommended.   Storage allocation for each new node is also needed; as a result, when scaling the database, the kubernetes cluster will create new persistent volume claims and volumes.
 
 Because Neo4j's configuration is different in single-node mode (dbms.mode=SINGLE) you should not
 scale a deployment if it was initially set to 1 coreServer.  This will result in multiple independent
@@ -193,7 +193,8 @@ Once the new node is caught up, you can execute the cypher query CALL dbms.clust
 Scaled pods inherit their configuration from their statefulset.  For neo4j, this means that items like configured storage size, hardware limits, and passwords apply to scale up members.
 
 If scaling down, do not scale below three core nodes; this is the minimum necessary to guarantee a properly functioning cluster with data redundancy.   Consult the neo4j clustering documentation for more information.
-Neo4j on PKS is configured to never delete the backing data drive, to lessen the chance of inadvertent data destruction.   If you scale up and then later scale down, this may orphan a GCE disk, which you may want to manually delete at a later date.
+
+Neo4j on PKS is configured to never delete the backing data drive, to lessen the chance of inadvertent data destruction.   If you scale up and then later scale down, this may orphan a disk, which you may want to manually delete at a later date.
 
 ## Security
 
