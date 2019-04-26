@@ -4,7 +4,7 @@ NAME=graph-$(head -c 3 /dev/urandom | base64)
 
 helm template chart/ \
    --set namespace=default \
-   --set image=neo4j:3.5.2-enterprise \
+   --set image=mdavidallen/causal-cluster:3.5 \
    --set name=$NAME \
    --set neo4jPassword=mySecretPassword \
    --set authEnabled=true \
