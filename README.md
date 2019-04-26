@@ -40,6 +40,7 @@ helm template chart/ \
    --set cpuRequest=200m \
    --set memoryRequest=1Gi \
    --set volumeSize=2Gi \
+   --set volumeStorageClass=standard \
    --set acceptLicenseAgreement=yes > expanded.yaml
 ```
 
