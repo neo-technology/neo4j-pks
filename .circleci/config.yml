@@ -17,11 +17,13 @@ jobs:
 
       - run:
           name: PKS Environment Setup
-          bin/pks-linux login -a $PKS_ENDPOINT -u $PKS_USERNAME -p $PKS_PASSWORD -k
-          bin/pks-linux get-credentials neo4j
+          command: |
+             bin/pks-linux login -a $PKS_ENDPOINT -u $PKS_USERNAME -p $PKS_PASSWORD -k
+             bin/pks-linux get-credentials neo4j
       
       - run:
           name: Kubectl Setup
-          curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-          chmod +x kubectl
-          ./kubectl config use-context neo4j                    
+          command: |
+             curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+             chmod +x kubectl
+             ./kubectl config use-context neo4j                    
