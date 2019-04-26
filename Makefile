@@ -67,11 +67,12 @@ install: .build/tiller-install uninstall
 	helm package chart/neo4j --destination target
 	ls -l target/neo4j-$(SOLUTION_VERSION).tgz
 
+# You can specify a SUFFIX to build a particular version or git hash.
 .build/neo4j/causal-cluster:  causal-cluster/*
 	docker pull neo4j:$(NEO4J_VERSION)
-	docker build --tag $(REGISTRY):$(SOLUTION_VERSION) \
+	docker build --tag $(REGISTRY):$(SOLUTION_VERSION)$(SUFFIX) \
 		--build-arg NEO4J_VERSION="$(NEO4J_VERSION)" \
 		-f causal-cluster/Dockerfile \
 		.
-	docker push $(REGISTRY):$(SOLUTION_VERSION)
+	docker push $(REGISTRY):$(SOLUTION_VERSION)$(SUFFIX)
 

@@ -14,17 +14,30 @@ jobs:
       - run:
           name: OS Setup
           command: |
-            apt-get update && apt-get install -y curl wget
+            apt-get update && apt-get install -y curl wget make
 
       - run:
-          name: PKS Environment Setup
+          name: PKS Environment Setup / Auth to Pivotal Test Environment
           command: |
              bin/pks-linux login -a $PKS_ENDPOINT -u $PKS_USERNAME -p $PKS_PASSWORD -k
              bin/pks-linux get-credentials neo4j
-      
+
       - run:
           name: Kubectl Setup
           command: |
              curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
              chmod +x kubectl
              ./kubectl config use-context neo4j                    
+
+      - run:
+          name: Install Helm
+          command: |
+             curl -LO https://storage.googleapis.com/kubernetes-helm/helm-v2.13.1-linux-amd64.tar.gz
+             tar zxvf helm-v2.13.1-linux-amd64.tar.gz
+             mv linux-amd64/helm .
+             ./helm version
+
+      - run:
+          name: Build 
+          command: |
+             make SUFFIX=-$CIRCLE_BRANCH-$CIRCLE_SHA1 .build/neo4j/causal-cluster
