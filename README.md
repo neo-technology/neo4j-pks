@@ -21,8 +21,10 @@ Persistent Volumes (PVs) are used to back each cluster pod; HA clusters generall
 
 ## Manual Installation
 
-To avoid the need for helm permissions in the kubernetes cluster, we use helm as a local template
-expansion tool, and apply the resulting YAML.
+### Helm Installation
+
+Just running `make install` should be enough if your `kubectl` is set up properly.  This will additionally
+handle the tiller setup, if necessary.
 
 ### Helm Expansion
 
