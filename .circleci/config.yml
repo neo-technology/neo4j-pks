@@ -47,7 +47,7 @@ jobs:
              ./helm init --client-only
 
       - run: 
-          name: Setup Google Tooling
+          name: Setup GCP Tooling for Container Registry
           command: |
             echo $GCLOUD_SERVICE_KEY > service-key.json
             gcloud auth activate-service-account \
@@ -63,6 +63,11 @@ jobs:
              BUILD=-$CIRCLE_BRANCH-$CIRCLE_SHA1
              mkdir -p target && echo $BUILD | tee -a target/BUILD.txt
              make BUILD=$BUILD
+
+      - run:
+          name: Test
+          command: |
+            echo "TBD - pending install into PKS"
 
       - store_artifacts:
           path: target/         
