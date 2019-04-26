@@ -19,7 +19,14 @@ Persistent Volumes (PVs) are used to back each cluster pod; HA clusters generall
 * [Neo4j Clustering Operations Manual](https://neo4j.com/docs/operations-manual/current/clustering/)
 * [Detailed technical description of querying Neo4j clusters](https://medium.com/neo4j/querying-neo4j-clusters-7d6fde75b5b4)
 
+## Manual Installation
+
+To avoid the need for helm permissions in the kubernetes cluster, we use helm as a local template
+expansion tool, and apply the resulting YAML.
+
 ### Helm Expansion
+
+This shows the use of various configuration parameters which can be adjusted.
 
 ```
 helm template chart/ \
@@ -39,3 +46,15 @@ helm template chart/ \
 ### Applying to Cluster (Manual)
 
 ```kubectl apply -f expanded.yaml```
+
+### Removing the Installation
+
+```kubectl delete -f expanded.yaml```
+
+### (Optional) Removing the Left-Behind PVCs
+
+Here, the value "graph-MdwZ" was the `name` generated in the above step.
+
+```
+kubectl delete pvc --namespace default -l release=graph-MdwZ -l app=neo4j
+```
