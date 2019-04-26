@@ -8,8 +8,8 @@ if [ -z $APP_INSTANCE_NAME ] && [ -z $1 ] ; then
     exit 1
 fi
 
-SOLUTION_VERSION=$(cat chart/Chart.yaml | grep version: | sed 's/.*: //g')
-IMAGE=mdavidallen/causal-cluster:3.5
+SOLUTION_VERSION=$(cat chart/neo4j/Chart.yaml | grep version: | sed 's/.*: //g')
+IMAGE=gcr.io/neo4j-pivotal/causal-cluster:3.5
 
 if ! [ -z $1 ] ; then
    APP_INSTANCE_NAME=$1
