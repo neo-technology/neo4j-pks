@@ -6,7 +6,7 @@ jobs:
 
     steps:
       - checkout
-
+      - setup_remote_docker
       - run:
           name: OS Setup
           command: |
@@ -58,3 +58,6 @@ jobs:
           name: Build 
           command: |
              make SUFFIX=-$CIRCLE_BRANCH-$CIRCLE_SHA1 .build/neo4j/causal-cluster
+
+      - store_artifacts:
+          path: target/         
