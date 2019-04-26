@@ -14,7 +14,7 @@ jobs:
       - run:
           name: OS Setup
           command: |
-            apt-get update && apt-get install -y curl wget make
+            apt-get update && apt-get install -y curl wget make docker
 
       - run:
           name: PKS Environment Setup / Auth to Pivotal Test Environment
