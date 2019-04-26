@@ -1,8 +1,15 @@
 #!/bin/bash
 
+if [ -z $1 ] ; then
+   echo "Call me with the APP_INSTANCE_NAME of your deploy"
+   exit 1
+fi
+
+APP_INSTANCE_NAME=$1
+
 NS="${RELEASE_NAMESPACE:-default}"
-STATEFULSET_NAME="${RELEASE_NAME:-neo4j}-neo4j"
-NEO4J_SECRETS_PASSWORD=$(kubectl get secret -n ${NS} ${RELEASE_NAME}-neo4j-secrets -o jsonpath='{.data.neo4j-password}' | base64 --decode)
+STATEFULSET_NAME="${APP_INSTANCE_NAME:-neo4j}-neo4j"
+NEO4J_SECRETS_PASSWORD=$(kubectl get secret -n ${NS} ${APP_INSTANCE_NAME}-neo4j-secrets -o jsonpath='{.data.neo4j-password}' | base64 --decode)
 CORE_REPLICAS=${REPLICAS:-3}
 
 echo "Testing we can get the cluster role of each server in statefulset ${STATEFULSET_NAME} in namespace: ${NS}"
