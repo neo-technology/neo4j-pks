@@ -3,5 +3,7 @@ kubeconfig
 nohup.out
 expanded.yaml
 
+.build
+
 # Helm packages
 target/*.tgz
