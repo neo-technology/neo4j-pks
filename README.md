@@ -1,5 +1,7 @@
 # Neo4j PKS Integration
 
+[![CircleCI](https://circleci.com/gh/neo-technology/neo4j-pks.svg?style=svg)](https://circleci.com/gh/neo-technology/neo4j-pks)
+
 For documentation on installation and usage, please refer to the [user guide](user-guide/USER-GUIDE.md)
 
 ## Overview

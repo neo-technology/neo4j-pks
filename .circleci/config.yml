@@ -10,10 +10,18 @@ jobs:
       - run:
           name: OS Setup
           command: |
-            apt-get install apt-transport-https ca-certificates curl gnupg2 software-properties-common
+            # Secure software install
+            apt-get update && apt-get install apt-transport-https ca-certificates curl gnupg2 software-properties-common            
+            
+            # Google Cloud stuff
+            export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+            echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+            
+            # Docker stuff
             curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
             sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
-            apt-get update && apt-get install -y wget make docker-ce docker-ce-cli containerd.io
+            
+            apt-get update && apt-get install -y wget make google-cloud-sdk docker-ce docker-ce-cli containerd.io
 
       - run:
           name: PKS Environment Setup / Auth to Pivotal Test Environment
@@ -35,6 +43,15 @@ jobs:
              tar zxvf helm-v2.13.1-linux-amd64.tar.gz
              mv linux-amd64/helm .
              ./helm version
+
+      - run: 
+          name: Setup Google Tooling
+          command: |
+            echo $GCLOUD_SERVICE_KEY > service-key.json
+            gcloud auth activate-service-account \
+                neo4j-pks-build@neo4j-pivotal.iam.gserviceaccount.com \
+                --key-file=service-key.json
+            gcloud auth configure-docker
 
       - run:
           name: Build 
