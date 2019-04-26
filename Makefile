@@ -1,7 +1,7 @@
 NAME = neo4j
-REGISTRY = mdavidallen/causal-cluster
+REGISTRY = gcr.io/neo4j-pivotal/causal-cluster
 # Solution version
-SOLUTION_VERSION=$(shell cat chart/Chart.yaml | grep version: | sed 's/.*: //g')
+SOLUTION_VERSION=$(shell cat chart/neo4j/Chart.yaml | grep version: | sed 's/.*: //g')
 TAG=$(SOLUTION_VERSION)
 APP_DEPLOYER_IMAGE=$(REGISTRY)/deployer:$(SOLUTION_VERSION)
 APP_RESTORE_IMAGE=$(REGISTRY)/restore:$(SOLUTION_VERSION)
@@ -22,10 +22,16 @@ APP_PARAMETERS ?= { \
 APP_TEST_PARAMETERS ?= { }
 
 app/build:: .build/neo4j \
-	.build/neo4j/causal-cluster
+	.build/neo4j/causal-cluster \
+	.build/neo4j/helm-package
 
 .build/neo4j: 
 	mkdir -p "$@"
+
+.build/neo4j/helm-package:	chart/neo4j/*
+	mkdir target
+	helm package chart/neo4j --destination target
+	ls -l target/neo4j-$(SOLUTION_VERSION).tgz
 
 .build/neo4j/causal-cluster:  causal-cluster/*
 	docker pull neo4j:$(NEO4J_VERSION)

@@ -2,3 +2,6 @@ cluster
 kubeconfig
 nohup.out
 expanded.yaml
+
+# Helm packages
+target/*.tgz
