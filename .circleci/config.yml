@@ -8,10 +8,6 @@ jobs:
       - checkout
 
       - run:
-          name: Greeting
-          command: echo Hello, world.
-
-      - run:
           name: OS Setup
           command: |
             apt-get install apt-transport-https ca-certificates curl gnupg2 software-properties-common
