@@ -40,7 +40,8 @@ app/build:: .build/neo4j \
 	helm init --service-account tiller --upgrade | tee -a .build/helm/tiller
 
 uninstall: .build/tiller-install
-	helm delete --purge $(APP_NAME) || kubectl delete pvc --namespace $(NAMESPACE) -l release=$(APP_NAME)
+	helm delete --purge $(APP_NAME) || true
+	kubectl delete pvc --namespace $(NAMESPACE) -l release=$(APP_NAME)
 
 install: .build/tiller-install uninstall
 	helm install chart/neo4j --name $(APP_NAME) \
