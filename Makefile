@@ -23,13 +23,20 @@ APP_TEST_PARAMETERS ?= { }
 
 app/build:: .build/neo4j \
 	.build/neo4j/causal-cluster \
-	.build/neo4j/helm-package
+	.build/neo4j/helm-package \
+	.build/neo4j/docker-package
 
 .build/neo4j: 
 	mkdir -p "$@"
 
+clean:
+	rm -f target/*
+
+.build/neo4j/docker-package: .build/neo4j/causal-cluster
+	docker save $(REGISTRY):$(SOLUTION_VERSION) | gzip -9 > target/causal-cluster_image.$(SOLUTION_VERSION).tgz
+
 .build/neo4j/helm-package:	chart/neo4j/*
-	mkdir target
+	mkdir -p target
 	helm package chart/neo4j --destination target
 	ls -l target/neo4j-$(SOLUTION_VERSION).tgz
 
@@ -37,7 +44,6 @@ app/build:: .build/neo4j \
 	docker pull neo4j:$(NEO4J_VERSION)
 	docker build --tag $(REGISTRY):$(SOLUTION_VERSION) \
 		--build-arg NEO4J_VERSION="$(NEO4J_VERSION)" \
-  	    --build-arg MARKETPLACE_TOOLS_TAG="$(MARKETPLACE_TOOLS_TAG)" \
 		-f causal-cluster/Dockerfile \
 		.
 	docker push $(REGISTRY):$(SOLUTION_VERSION)
