@@ -60,7 +60,7 @@ jobs:
              # Add cwd to path to pick up the helm binary we installed.
              export PATH=.:$PATH
              BUILD=-$CIRCLE_BRANCH-$CIRCLE_SHA1
-             echo $BUILD | tee -a target/BUILD.txt
+             mkdir -p target && echo $BUILD | tee -a target/BUILD.txt
              make BUILD=$BUILD
 
       - store_artifacts:
