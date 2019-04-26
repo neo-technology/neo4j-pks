@@ -5,6 +5,9 @@ jobs:
       - image: debian:stretch
 
     steps:
+      - restore_cache:
+        key: pkg
+
       - checkout
 
       - run:
@@ -12,8 +15,9 @@ jobs:
           command: echo Hello, world.
 
       - run:
-          name: Print the Current Time
-          command: date
+          name: OS Setup
+          command: |
+             apt-get install curl wget
 
       - run:
           name: PKS Environment Setup
@@ -27,3 +31,6 @@ jobs:
              curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
              chmod +x kubectl
              ./kubectl config use-context neo4j                    
+
+      - save_cache:
+          key: pkg
