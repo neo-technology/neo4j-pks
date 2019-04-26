@@ -1,7 +1,8 @@
 NAME = neo4j
 REGISTRY = gcr.io/neo4j-pivotal/causal-cluster
 # Neo4j version, with a BUILD for CI appended, if one is specified; see .circleci/config.yml
-SOLUTION_VERSION=$(shell cat chart/neo4j/Chart.yaml | grep version: | sed 's/.*: //g')$(BUILD)
+CHART_VERSION=$(shell cat chart/neo4j/Chart.yaml | grep version: | sed 's/.*: //g')
+SOLUTION_VERSION=$(CHART_VERSION)$(BUILD)
 TAG=$(SOLUTION_VERSION)
 APP_DEPLOYER_IMAGE=$(REGISTRY)/deployer:$(SOLUTION_VERSION)
 APP_RESTORE_IMAGE=$(REGISTRY)/restore:$(SOLUTION_VERSION)
@@ -65,7 +66,7 @@ install: .build/tiller-install uninstall
 .build/neo4j/helm-package:	chart/neo4j/*
 	mkdir -p target	
 	helm package chart/neo4j --destination target
-	ls -l target/neo4j-$(SOLUTION_VERSION).tgz
+	ls -l target/neo4j-$(CHART_VERSION).tgz
 
 .build/neo4j/causal-cluster:  causal-cluster/*
 	docker pull neo4j:$(NEO4J_VERSION)
