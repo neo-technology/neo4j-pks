@@ -63,7 +63,7 @@ install: .build/tiller-install uninstall
 	docker save $(REGISTRY):$(SOLUTION_VERSION) | gzip -9 > target/causal-cluster_image.$(SOLUTION_VERSION).tgz
 
 .build/neo4j/helm-package:	chart/neo4j/*
-	mkdir -p target
+	mkdir -p target	
 	helm package chart/neo4j --destination target
 	ls -l target/neo4j-$(SOLUTION_VERSION).tgz
 

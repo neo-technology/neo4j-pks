@@ -44,6 +44,7 @@ jobs:
              tar zxvf helm-v2.13.1-linux-amd64.tar.gz
              mv linux-amd64/helm .
              ./helm version
+             ./helm init --client-only
 
       - run: 
           name: Setup Google Tooling
