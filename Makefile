@@ -54,7 +54,7 @@ install: .build/tiller-install uninstall
 		--set neo4jPassword=mySecretPassword \
 		--set authEnabled=true \
 		--set coreServers=3 \
-		--set readReplicaServers=0 \
+		--set readReplicaServers=1 \
 		--set cpuRequest=200m \
 		--set memoryRequest=1Gi \
 		--set volumeSize=2Gi \
@@ -79,11 +79,11 @@ install: .build/tiller-install uninstall
 		.
 	docker push $(REGISTRY):$(SOLUTION_VERSION)
 
-.build/neo4j/tester: .build/neo4j test/*.yaml
+.build/neo4j/tester: .build/neo4j test/*.yaml test/*.sh
 	$(call print_target,$@)
-	docker build \
+	cd test && docker build \
 	   --tag "$(TESTER_IMAGE)" \
-	   -f test/Dockerfile \
+	   -f Dockerfile \
 	   .
 	docker push "$(TESTER_IMAGE)"
 	@touch "$@"
