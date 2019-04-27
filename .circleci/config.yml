@@ -92,7 +92,7 @@ jobs:
       - run:
           name: Uninstall / Cleanup
           command: |
-            kubectl delete namespaces $NAMESPACE
+            ./kubectl delete namespaces $NAMESPACE
 
       - store_artifacts:
           path: target/         
