@@ -64,7 +64,16 @@ jobs:
              export PATH=.:$PATH
              BUILD=-$CIRCLE_BRANCH-$CIRCLE_SHA1
              mkdir -p target && echo $BUILD | tee -a target/BUILD.txt
-             make BUILD=$BUILD
+             make BUILD=$BUILD build | tee -a target/BUILD.txt
+
+      - run:
+          name: Package 
+          command: |
+             # Add cwd to path to pick up the helm binary we installed.
+             export PATH=.:$PATH
+             BUILD=-$CIRCLE_BRANCH-$CIRCLE_SHA1
+             mkdir -p target && echo $BUILD | tee -a target/PACKAGE.txt
+             make BUILD=$BUILD package | tee -a target/PACKAGE.txt
 
       - run:
           name: Install 
@@ -72,7 +81,7 @@ jobs:
              # Add cwd to path to pick up the helm binary we installed.
              export PATH=.:$PATH
              BUILD=-$CIRCLE_BRANCH-$CIRCLE_SHA1
-             make BUILD=$BUILD NAMESPACE=build-$CIRCLE_BUILD_NUM install
+             make BUILD=$BUILD NAMESPACE=build-$CIRCLE_BUILD_NUM install | tee -a target/INSTALL.txt
 
       - run:
           name: Test

@@ -23,11 +23,13 @@ APP_PARAMETERS ?= { \
 
 APP_TEST_PARAMETERS ?= { }
 
-app/build:: .build/neo4j \
-    .build/helm \
-	.build/neo4j/causal-cluster \
-	.build/neo4j/helm-package \
+build:: .build/neo4j/causal-cluster \
+  .build/neo4j/tester
+
+package: 	.build/neo4j/helm-package \
 	.build/neo4j/docker-package
+
+all:	app/build package
 
 .build/neo4j: 
 	mkdir -p "$@"
@@ -62,13 +64,14 @@ install: .build/tiller-install uninstall
 
 .build/neo4j/docker-package: .build/neo4j/causal-cluster
 	docker save $(REGISTRY):$(SOLUTION_VERSION) | gzip -9 > target/causal-cluster_image.$(SOLUTION_VERSION).tgz
+	docker save $(TESTER_IMAGE) | gzip -9 > target/tester_image.$(SOLUTION_VERSION).tgz
 
-.build/neo4j/helm-package:	chart/neo4j/*
+.build/neo4j/helm-package: chart/neo4j/*
 	mkdir -p target	
 	helm package chart/neo4j --destination target
 	ls -l target/neo4j-$(CHART_VERSION).tgz
 
-.build/neo4j/causal-cluster:  causal-cluster/*
+.build/neo4j/causal-cluster:  .build/neo4j causal-cluster/*
 	docker pull neo4j:$(NEO4J_VERSION)
 	docker build --tag $(REGISTRY):$(SOLUTION_VERSION) \
 		--build-arg NEO4J_VERSION="$(NEO4J_VERSION)" \
@@ -76,3 +79,11 @@ install: .build/tiller-install uninstall
 		.
 	docker push $(REGISTRY):$(SOLUTION_VERSION)
 
+.build/neo4j/tester: .build/neo4j test/*.yaml
+	$(call print_target,$@)
+	docker build \
+	   --tag "$(TESTER_IMAGE)" \
+	   -f test/Dockerfile \
+	   .
+	docker push "$(TESTER_IMAGE)"
+	@touch "$@"
