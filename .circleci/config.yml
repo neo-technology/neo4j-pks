@@ -108,4 +108,6 @@ jobs:
 
       - store_artifacts:
           path: target/
+      
+      - store_artifacts:
           path: .build/
