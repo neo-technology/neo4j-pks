@@ -93,7 +93,10 @@ jobs:
           name: Test
           command: |
             export PATH=.:$PATH
-            /bin/bash ./run-test-container.sh
+            IMAGE=$(cat .build/neo4j/tester/image)
+            NAMESPACE=build-$CIRCLE_BUILD_NUM
+            NAME=testrun
+            /bin/bash ./run-test-container.sh $IMAGE $NAMESPACE $NAME
 
       - run:
           name: Uninstall / Cleanup

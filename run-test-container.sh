@@ -1,13 +1,13 @@
 #!/bin/bash
 
-export IMAGE=gcr.io/neo4j-pivotal/causal-cluster/tester:3.5.4
-export NAMESPACE=default
+export IMAGE=${$1:-gcr.io/neo4j-pivotal/causal-cluster/tester:3.5.4}
+export NAMESPACE=${$2:-default}
+export NAME=${$3:-testrun}
+export CORES=3
+export READ_REPLICAS=1
 export HTTP_PORT=7474
 export HTTPS_PORT=7473
 export BOLT_PORT=7687
-export NAME=testrun
-export CORES=3
-export READ_REPLICAS=1
 
 cat test/tester.yaml | envsubst > target/tester.yaml
 

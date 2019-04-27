@@ -72,18 +72,21 @@ install: .build/tiller-install uninstall
 	ls -l target/neo4j-$(CHART_VERSION).tgz
 
 .build/neo4j/causal-cluster:  .build/neo4j causal-cluster/*
+	mkdir -p .build/neo4j/causal-cluster
 	docker pull neo4j:$(NEO4J_VERSION)
 	docker build --tag $(REGISTRY):$(SOLUTION_VERSION) \
 		--build-arg NEO4J_VERSION="$(NEO4J_VERSION)" \
 		-f causal-cluster/Dockerfile \
 		.
 	docker push $(REGISTRY):$(SOLUTION_VERSION)
+	echo "$(REGISTRY):$(SOLUTION_VERSION)" > .build/neo4j/causal-cluster/image
 
 .build/neo4j/tester: .build/neo4j test/*.yaml test/*.sh
+	mkdir -p .build/neo4j/tester
 	$(call print_target,$@)
 	cd test && docker build \
 	   --tag "$(TESTER_IMAGE)" \
 	   -f Dockerfile \
 	   .
 	docker push "$(TESTER_IMAGE)"
-	@touch "$@"
+	echo "$(TESTER_IMAGE)" > .build/neo4j/tester/image
