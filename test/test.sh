@@ -7,7 +7,7 @@ fi
 
 APP_INSTANCE_NAME=$1
 
-NS="${RELEASE_NAMESPACE:-default}"
+NS="${NAMESPACE:-default}"
 STATEFULSET_NAME="${APP_INSTANCE_NAME:-neo4j}-neo4j"
 NEO4J_SECRETS_PASSWORD=$(kubectl get secret -n ${NS} ${APP_INSTANCE_NAME}-neo4j-secrets -o jsonpath='{.data.neo4j-password}' | base64 --decode)
 CORE_REPLICAS=${REPLICAS:-3}

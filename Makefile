@@ -9,7 +9,7 @@ APP_RESTORE_IMAGE=$(REGISTRY)/restore:$(SOLUTION_VERSION)
 APP_BACKUP_IMAGE=$(REGISTRY)/restore:$(SOLUTION_VERSION)
 NEO4J_VERSION=3.5.4-enterprise
 TESTER_IMAGE = $(REGISTRY)/tester:$(SOLUTION_VERSION)
-NAMESPACE = default
+NAMESPACE ?= default
 
 APP_NAME ?= testrun
 
@@ -45,7 +45,7 @@ uninstall: .build/tiller-install
 	kubectl delete pvc --namespace $(NAMESPACE) -l release=$(APP_NAME)
 
 install: .build/tiller-install uninstall
-	helm install chart/neo4j --name $(APP_NAME) \
+	helm install chart/neo4j --namespace $(NAMESPACE) --name $(APP_NAME) \
 		--set namespace=$(NAMESPACE) \
 		--set image=$(REGISTRY):$(SOLUTION_VERSION) \
 		--set name=$(APP_NAME) \
