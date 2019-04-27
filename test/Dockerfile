@@ -7,4 +7,8 @@ RUN echo 'deb https://debian.neo4j.org/repo stable/' | tee -a /etc/apt/sources.l
 RUN apt-get update && apt-get -y upgrade 
 RUN apt-get install -y cypher-shell
 
-CMD ["/bin/bash"]
+RUN mkdir /test
+COPY run.sh /test
+RUN chmod +x /test/run.sh
+
+CMD ["/bin/bash", "/test/run.sh"]
