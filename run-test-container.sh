@@ -9,8 +9,6 @@ export HTTP_PORT=7474
 export HTTPS_PORT=7473
 export BOLT_PORT=7687
 
-env
-
 cat test/tester.yaml | envsubst > target/tester.yaml
 
 # Delete pod if it happens to be leftover from a previous test run.
