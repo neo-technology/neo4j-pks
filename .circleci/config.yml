@@ -3,8 +3,6 @@ jobs:
   build:
     docker:
       - image: debian:stretch
-        environment:
-          NAMESPACE: build-{{ .BuildNum }} 
 
     steps:
       - checkout
@@ -13,7 +11,7 @@ jobs:
           name: Tooling pre-requisites
           command: |
             # Secure software install
-            apt-get update && apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common            
+            apt-get update && apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common
             
             # Google Cloud stuff
             export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
@@ -23,8 +21,14 @@ jobs:
             # Docker stuff
             curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
             add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
-            
-            apt-get update && apt-get install -y wget make google-cloud-sdk docker-ce docker-ce-cli containerd.io
+
+            EXTRA_NEEDED_TOOLS="wget make gettext-base"
+            DOCKER="docker-ce docker-ce-cli containerd.io"
+
+            apt-get update && apt-get install -y \
+               google-cloud-sdk \
+               $DOCKER \
+               $EXTRA_NEEDED_TOOLS
 
       - run:
           name: PKS Environment Setup / Auth to Pivotal Test Environment
@@ -67,6 +71,16 @@ jobs:
              make BUILD=$BUILD build | tee -a target/BUILD.txt
 
       - run:
+          name: Install 
+          command: |
+             # Add cwd to path to pick up the helm binary we installed.
+             export PATH=.:$PATH
+             BUILD=-$CIRCLE_BRANCH-$CIRCLE_SHA1
+             make BUILD=$BUILD NAMESPACE=build-$CIRCLE_BUILD_NUM install | tee -a target/INSTALL.txt
+
+      # We run packaging after it's installed into the cluster, because it
+      # needs some startup time anyway.
+      - run:
           name: Package 
           command: |
              # Add cwd to path to pick up the helm binary we installed.
@@ -76,23 +90,18 @@ jobs:
              make BUILD=$BUILD package | tee -a target/PACKAGE.txt
 
       - run:
-          name: Install 
-          command: |
-             # Add cwd to path to pick up the helm binary we installed.
-             export PATH=.:$PATH
-             BUILD=-$CIRCLE_BRANCH-$CIRCLE_SHA1
-             make BUILD=$BUILD NAMESPACE=build-$CIRCLE_BUILD_NUM install | tee -a target/INSTALL.txt
-
-      - run:
           name: Test
           command: |
-            echo "TBD - pending install into PKS"
-            sleep 500
+            export PATH=.:$PATH
+            /bin/bash ./run-test-container.sh
 
       - run:
           name: Uninstall / Cleanup
+          # Make sure to always run this, particularly if the test fails,
+          # to avoid clogging our cluster.
+          when: always
           command: |
-            ./kubectl delete namespaces $NAMESPACE
+            ./kubectl delete namespaces build-$CIRCLE_BUILD_NUM
 
       - store_artifacts:
           path: target/         
