@@ -3,12 +3,14 @@ jobs:
   build:
     docker:
       - image: debian:stretch
+        environment:
+          NAMESPACE: build-{{ .BuildNum }} 
 
     steps:
       - checkout
       - setup_remote_docker
       - run:
-          name: OS Setup
+          name: Tooling pre-requisites
           command: |
             # Secure software install
             apt-get update && apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common            
@@ -65,9 +67,23 @@ jobs:
              make BUILD=$BUILD
 
       - run:
+          name: Install 
+          command: |
+             # Add cwd to path to pick up the helm binary we installed.
+             export PATH=.:$PATH
+             BUILD=-$CIRCLE_BRANCH-$CIRCLE_SHA1
+             make BUILD=$BUILD NAMESPACE=$NAMESPACE install
+
+      - run:
           name: Test
           command: |
             echo "TBD - pending install into PKS"
+            sleep 500
+
+      - run:
+          name: Uninstall / Cleanup
+          command: |
+            kubectl delete namespaces $NAMESPACE
 
       - store_artifacts:
           path: target/         
