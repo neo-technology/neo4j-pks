@@ -7,3 +7,6 @@ expanded.yaml
 
 # Helm packages
 target/*.tgz
+
+# Generated tester yaml
+target/*.yaml
