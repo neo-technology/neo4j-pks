@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export IMAGE="${$1:-gcr.io/neo4j-pivotal/causal-cluster/tester:3.5.4}"
-export NAMESPACE="${$2:-default}"
-export NAME="${$3:-testrun}"
+export IMAGE="${1:-gcr.io/neo4j-pivotal/causal-cluster/tester:3.5.4}"
+export NAMESPACE="${2:-default}"
+export NAME="${3:-testrun}"
 export CORES=3
 export READ_REPLICAS=1
 export HTTP_PORT=7474

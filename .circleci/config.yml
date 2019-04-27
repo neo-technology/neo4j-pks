@@ -107,4 +107,5 @@ jobs:
             ./kubectl delete namespaces build-$CIRCLE_BUILD_NUM
 
       - store_artifacts:
-          path: target/         
+          path: target/
+          path: .build/
