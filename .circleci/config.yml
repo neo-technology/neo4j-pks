@@ -72,7 +72,7 @@ jobs:
              # Add cwd to path to pick up the helm binary we installed.
              export PATH=.:$PATH
              BUILD=-$CIRCLE_BRANCH-$CIRCLE_SHA1
-             make BUILD=$BUILD NAMESPACE=$NAMESPACE install
+             make BUILD=$BUILD NAMESPACE=build-$CIRCLE_BUILD_NUM install
 
       - run:
           name: Test
