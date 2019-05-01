@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export IMAGE="${1:-gcr.io/neo4j-pivotal/causal-cluster/tester:3.5.4}"
+export IMAGE="${1:-gcr.io/neo4j-pivotal/causal-cluster/tester:3.5.5}"
 export NAMESPACE="${2:-default}"
 export NAME="${3:-testrun}"
 export CORES=3
