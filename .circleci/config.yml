@@ -90,6 +90,12 @@ jobs:
              make BUILD=$BUILD package | tee -a target/PACKAGE.txt
 
       - run:
+          name: Wait for PKS deployment to succeed and become ready
+          command: |
+             NAMESPACE=build-$CIRCLE_BUILD_NUM
+             ./kubectl rollout status --namespace $NAMESPACE StatefulSet/testrun-neo4j-core --watch
+
+      - run:
           name: Test
           command: |
             export PATH=.:$PATH
