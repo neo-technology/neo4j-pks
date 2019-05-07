@@ -92,7 +92,8 @@ jobs:
       - run:
           name: Wait for PKS deployment to succeed and become ready
           command: |
-             ./kubectl rollout status StatefulSet/testrun-neo4j-core --watch
+              NAMESPACE=build-$CIRCLE_BUILD_NUM
+             ./kubectl rollout status --namespace $NAMESPACE StatefulSet/testrun-neo4j-core --watch
 
       - run:
           name: Test
