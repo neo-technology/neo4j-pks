@@ -4,6 +4,18 @@
 
 For documentation on installation and usage, please refer to the [user guide](user-guide/USER-GUIDE.md)
 
+## Documentation
+
+Official documentation for Neo4j on PKS resides here in Pivotal's repo:
+
+https://github.com/pivotal-cf/docs-neo4j-enterprise
+
+Neo4j maintains a fork of that repo for upstream contributions here:
+
+https://github.com/neo-technology/docs-neo4j-enterprise
+
+The rest of the documentation here focuses on build chain and local testing.
+
 ## Overview
 
 This repo contains the files necessary to package and install Neo4j for Pivotal PKS.  The approach is based on a helm
